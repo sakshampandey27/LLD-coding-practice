@@ -1,49 +1,44 @@
-import Task
+from Task import Task, Status
+from TaskRepository import TaskRepository
 import uuid
 
 class TaskManager:
     def __init__(self):
-        self.tasks = {}
-    
-    def generate_task_uuid(self):
+        self.repository = TaskRepository()
+
+    def _generate_task_uuid(self):
         return str(uuid.uuid4())
 
     def create_task(self, title, description=None):
         try:
-            task_id = self.generate_task_uuid()        
-            self.tasks[task_id] = Task.Task(task_id, title, description)
+            task_id = self._generate_task_uuid()
+            task = Task(task_id, title, description)
+            self.repository.save(task)
             return task_id
         except ValueError as err:
             raise(err)
     
     def assign_task(self, task_id, user_id):
         try:
-            task = self.tasks[task_id]
+            task = self.repository.get(task_id)
             task.assign_user(user_id)
-        except KeyError:
-            raise("Task ID does not exist")
         except ValueError as err:
             raise(err)
             
 
     def update_status(self, task_id, new_status):
         try:
-            task = self.tasks[task_id]
+            task = self.repository.get(task_id)
             task.update_status(new_status.strip().upper())
-        except KeyError:
-            raise("Task ID does not exist")
         except ValueError as err:
             raise(err)
 
     def get_task(self, task_id):
-        try:
-            task = self.tasks[task_id]
-            return task.get_summary()
-        except KeyError:
-            raise("Task ID does not exist")            
+        task = self.repository.get(task_id)
+        return task.get_summary()
 
     def list_tasks(self, filter_by_status=None, filter_by_user=None):
-        tasks = self.tasks.values()
+        tasks = self.repository.list()
         if filter_by_status:
             tasks = self.filter_tasks_by_status(tasks, filter_by_status)
         if filter_by_user:
@@ -54,7 +49,7 @@ class TaskManager:
     def filter_tasks_by_status(self, task_list, status):
         result_list = []
         for task in task_list:
-            if task.get_status() == Task.Status[status.strip().upper()]:
+            if task.get_status() == Status[status.strip().upper()]:
                 result_list.append(task)
         return result_list
 
@@ -64,6 +59,7 @@ class TaskManager:
             if task.get_assigned_user() == user:
                 result_list.append(task)
         return result_list
+
 
 if __name__ == "__main__":
     task_manager = TaskManager()
