@@ -1,6 +1,5 @@
 import Task
 import uuid
-import sys
 
 class TaskManager:
     def __init__(self):
@@ -15,38 +14,33 @@ class TaskManager:
             self.tasks[task_id] = Task.Task(task_id, title, description)
             return task_id
         except ValueError as err:
-            print(err)
-            raise
+            raise(err)
     
     def assign_task(self, task_id, user_id):
         try:
             task = self.tasks[task_id]
             task.assign_user(user_id)
         except KeyError:
-            print("Task ID does not exist")
-            raise 
+            raise("Task ID does not exist")
         except ValueError as err:
-            print(err)
-            raise
+            raise(err)
+            
 
     def update_status(self, task_id, new_status):
         try:
             task = self.tasks[task_id]
             task.update_status(new_status.strip().upper())
         except KeyError:
-            print("Task ID does not exist")
-            raise
+            raise("Task ID does not exist")
         except ValueError as err:
-            print(err)
-            raise
+            raise(err)
 
     def get_task(self, task_id):
         try:
             task = self.tasks[task_id]
             return task.get_summary()
         except KeyError:
-            print("Task ID does not exist")
-            raise
+            raise("Task ID does not exist")            
 
     def list_tasks(self, filter_by_status=None, filter_by_user=None):
         tasks = self.tasks.values()
