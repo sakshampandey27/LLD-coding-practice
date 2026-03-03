@@ -1,5 +1,6 @@
 from enum import Enum
 from datetime import datetime
+import threading
 
 class Status(Enum):
     TODO = 1
@@ -15,7 +16,8 @@ class Task:
         self.description = description
         self.status = Status.TODO
         self.created_at = datetime.now()
-        self.assigned_user = None        
+        self.assigned_user = None
+        self.task_lock = threading.RLock()
     
     def get_status(self):
         return self.status
@@ -24,15 +26,17 @@ class Task:
         return self.assigned_user
     
     def update_status(self, new_status):
-        try:
-            self.status = Status[new_status]
-        except Exception as _:
-            raise ValueError("Update status failed - new status is not a valid choice")
+        with self.task_lock:
+            try:
+                self.status = Status[new_status]
+            except Exception as _:
+                raise ValueError("Update status failed - new status is not a valid choice")
 
     def assign_user(self, user):
-        if not user:
-            raise ValueError("User cannot be empty")
-        self.assigned_user = user
+        with self.task_lock:
+            if not user:
+                raise ValueError("User cannot be empty")
+            self.assigned_user = user
     
     def get_summary(self):
         return {
