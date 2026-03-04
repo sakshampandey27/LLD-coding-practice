@@ -71,6 +71,16 @@ class WalletManager:
         except KeyError as err:
             raise err
         
+    def get_transactions_advanced(self, wallet_id, limit=10, offset=0, type=None):
+        try:
+            wallet = self.repository.get(wallet_id)
+            transactions = wallet.get_transactions()
+            if type:
+                transactions = [txn for txn in transactions if txn["type"] == TransactionType[type.strip().upper()]]
+            transactions = transactions[offset: offset+limit]
+            return f"Wallet {wallet_id} has the following transactions: \n{transactions}\n"
+        except KeyError as err:
+            raise err
 
 if __name__ == '__main__':
     walletManager = WalletManager()
@@ -87,3 +97,5 @@ if __name__ == '__main__':
     print(walletManager.get_transactions(wallet2))
     print(walletManager.get_balance(wallet1))
     print(walletManager.get_balance(wallet2))
+    print(walletManager.get_transactions_advanced(wallet1, type="CREDIT"))
+    print(walletManager.get_transactions_advanced(wallet2))
