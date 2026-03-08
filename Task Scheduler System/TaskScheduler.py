@@ -11,7 +11,8 @@ class TaskScheduler:
 
     def submitTask(self, function_name, payload, scheduled_time, priority):
         task = Task(function_name, payload, scheduled_time, priority)
-        heapq.heappush(self.task_queue, task)
+        heap_item = (task.scheduled_time, task.priority, task.created_time, task)
+        heapq.heappush(self.task_queue, heap_item)
         self.task_map[task.id] = task
         return task.id
 
@@ -19,7 +20,8 @@ class TaskScheduler:
         if not self.task_queue:
             return None
 
-        task = self.task_queue[0]
+        heap_item = self.task_queue[0]
+        task = heap_item[3]
         if task.scheduled_time > datetime.now():
             return None
 

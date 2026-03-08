@@ -19,16 +19,16 @@ class Task:
         self.created_time = datetime.now()
         self.status = TaskStatus.CREATED
 
-    def __lt__(self, other):
-        return (
-            self.scheduled_time,
-            self.priority,
-            self.created_time
-        ) < (
-            other.scheduled_time,
-            other.priority,
-            other.created_time
-        )
+    # def __lt__(self, other):
+    #     return (
+    #         self.scheduled_time,
+    #         self.priority,
+    #         self.created_time
+    #     ) < (
+    #         other.scheduled_time,
+    #         other.priority,
+    #         other.created_time
+    #     )
     
     def set_running(self):
         self.status = TaskStatus.RUNNING
