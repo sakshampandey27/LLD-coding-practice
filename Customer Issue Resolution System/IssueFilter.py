@@ -6,5 +6,5 @@ class IssueFilter:
         self.type = type
         self.status = status
         self.email = email
-        self.agent = agent_id
+        self.agent_id = agent_id
     

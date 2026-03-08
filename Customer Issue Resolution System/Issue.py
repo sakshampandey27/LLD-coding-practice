@@ -2,7 +2,7 @@ from enum import Enum
 import uuid
 from IssueType import IssueType
 
-class IssueStatus:
+class IssueStatus(Enum):
     OPEN = 1
     ASSIGNED = 2
     RESOLVED = 3
@@ -37,12 +37,12 @@ class Issue:
     
     def get_summary(self):
         return {
-            "Type": self.type,
-            "Status": self._status,
-            "Email": self.email,
+            "Type": self.get_type(),
+            "Status": self.get_status(),
+            "Email": self.get_email(),
             "Subject": self.subject,
             "Description": self.description,
-            "Agent": self.assigned_agent
+            "Agent": self.get_assigned_agent()
         }
     
     def assign(self, assigned_agent):

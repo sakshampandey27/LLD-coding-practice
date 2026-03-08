@@ -57,6 +57,8 @@ class IssueManager:
         try:
             issue = self.issue_repository.get(issueId)
             issue.resolve()
+            assigned_agent = self.agent_repository.get(issue.get_assigned_agent())
+            assigned_agent.resolve_issue(issueId)
         except Exception as err:
             raise err
 
@@ -71,7 +73,7 @@ class IssueManager:
                     continue
                 if filter.email and issue.get_email() != filter.email:
                     continue
-                if filter.agent and issue.get_assigned_agent() != filter.agent:
+                if filter.agent_id and issue.get_assigned_agent() != filter.agent_id:
                     continue
                 filtered_issues.append(issue.get_summary())
             return filtered_issues
